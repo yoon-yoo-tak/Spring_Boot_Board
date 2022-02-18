@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BoardMapper">
+	<sql id="boardColumns">
+		idx
+		, title
+		, content
+		, writer
+		, view_cnt
+		, notice_yn
+		, secret_yn
+		, delete_yn
+		, insert_time
+		, update_time
+		, delete_time
+	</sql>
+	
+	<insert id="insertBoard" parameterType="BoardDTO">
+		insert into my_board(
+			<include refid="boardColumns"/>
+		)values(
+			#{idx}
+		, #{title}
+		, #{content}
+		, #{writer}
+		, 0
+		, IFNULL(#{noticeYn}, 'N')
+		, IFNULL(#{secretYn}, 'N')
+		, 'N'
+		, NOW()
+		, NULL
+		, NULL
+		)
+	
+	</insert>
+	
+	<select id="selectBoardDetail" parameterType="long" resultType="BoardDTO">
+		select
+			<include refid="boardColumns"/>
+		from
+			my_board
+		where
+			delete_yn = 'n'
+		and
+			idx = #{idx}
+	</select>
+	
+	<update id="updateBoard" parameterType="BoardDTO">
+		update my_board
+		set
+			update_time=NOW()
+			, title = #{title}
+			, content = #{content}
+			, writer = #{writer}
+			, notice_yn = IFNULL(#{noticeYn}, 'N')
+			, secret_yn = IFNULL(#{secretYn}, 'N')
+		where
+		 	idx = #{idx}
+	</update>
+	
+	<update id="deleteBoard" parameterType="long">
+		update my_board
+		set
+			delete_yn = 'Y'
+			, delete_time = NOW()
+		where
+			idx = #{idx}
+	</update>
+	
+	<select id="selectBoardList" parameterType="BoardDTO" resultType="BoardDTO">
+		select
+			<include refid="boardColumns"/>
+		from
+			my_board
+		where
+			delete_yn = 'N'
+		order by
+			notice_yn ASC,
+			idx DESC,
+			insert_time DESC
+	</select>
+	
+	<select id="selectBoardTotalCount" parameterType="BoardDTO" resultType="int">
+		select
+			count(*)
+		from 
+			my_board
+		where
+			delete_yn = 'N'
+	</select>
+</mapper>
