@@ -24,12 +24,14 @@ public class DBConfiguration {
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari")
-	public HikariConfig hikariConfig() {
+	public HikariConfig hikariConfig()
+	{
 		return new HikariConfig();
 	}
 
 	@Bean
 	public DataSource dataSource() {
+
 		return new HikariDataSource(hikariConfig());
 	}
 
@@ -53,6 +55,7 @@ public class DBConfiguration {
 	@Bean
 	@ConfigurationProperties(prefix="mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg(){
+
 		return new org.apache.ibatis.session.Configuration();
 	}
 	//추가내용
