@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 @Controller
 public class BoardController {
 
@@ -44,4 +45,47 @@ public class BoardController {
         }
         return "redirect:/board/list.do";
     }
+    
+    @GetMapping(value = "/board/list.do")
+    public String boardList(Model model) {
+    	List<BoardDTO> boardLst = boardService.getBoardList();
+    	model.addAttribute("boardLst", boardLst);
+    	
+    	return "board/list";
+    }
+    
+    @GetMapping(value = "/board/view.do")
+    public String boardDetail(@RequestParam(value = "idx", required = false) Long idx, Model model) {
+    	if(idx == null) {
+    		// 글번호가 없을경우
+    		return "redirect:/board/list.do";
+    	}
+    	BoardDTO board = boardService.getBoardDetail(idx);
+    	if(board == null || "Y".equals(board.getDeleteYn())) {
+    		// 없거나 삭제되엇을 경우
+    		return "redirect:/board/list.do";
+    	}
+    	model.addAttribute("board", board);
+    	return "board/view";
+    }
+    
+    @PostMapping(value="/board/delete.do")
+    public String deleteBoard(@RequestParam(value="idx", required = false) Long idx) {
+    	if(idx == null) {
+    		// 글번호가 없다
+    		return "redirect:/board/list.do";
+    	}
+    	try {
+    		boolean isDeleted = boardService.deleteBoard(idx);
+    		if(isDeleted == false) {
+    			// 삭제 실패
+    		}
+    	}catch(DataAccessException e){
+    		// db문제
+    	}catch(Exception e) {
+    		// 
+    	}
+    	return "redirect:/board/list.do";
+    }
 }
+
