@@ -84,20 +84,20 @@ class MapperTest {
 			}
 		}
 	}
-	@Test
-	public void listTest() {
-		int boardTotalCnt = boardMapper.selectBoardTotalCount();
-		if(boardTotalCnt > 0) {
-			List<BoardDTO> boardList = boardMapper.selectBoardList();
-			if (CollectionUtils.isEmpty(boardList) == false) {
-				for (BoardDTO board : boardList) {
-					System.out.println("=========================");
-					System.out.println(board.getTitle());
-					System.out.println(board.getContent());
-					System.out.println(board.getWriter());
-				}
-			}
-
-		}
-	}
+//	@Test
+//	public void listTest() {
+//		int boardTotalCnt = boardMapper.selectBoardTotalCount();
+//		if(boardTotalCnt > 0) {
+//			List<BoardDTO> boardList = boardMapper.selectBoardList();
+//			if (CollectionUtils.isEmpty(boardList) == false) {
+//				for (BoardDTO board : boardList) {
+//					System.out.println("=========================");
+//					System.out.println(board.getTitle());
+//					System.out.println(board.getContent());
+//					System.out.println(board.getWriter());
+//				}
+//			}
+//
+//		}
+//	}
 }

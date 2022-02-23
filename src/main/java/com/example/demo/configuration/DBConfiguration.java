@@ -11,16 +11,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @PropertySource("classpath:/application.properties")
+@EnableTransactionManagement
 public class DBConfiguration {
 
 	@Autowired
 	private ApplicationContext applicationContext;
+	
+	
 
 	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource.hikari")
@@ -41,7 +47,7 @@ public class DBConfiguration {
 		factoryBean.setDataSource(dataSource());
 		//추가내용
 		factoryBean.setMapperLocations(applicationContext.getResources("classpath:/mappers/**/*Mapper.xml"));
-		factoryBean.setTypeAliasesPackage("com.example.demo.domain");
+		factoryBean.setTypeAliasesPackage("com.example.demo.*");
 		factoryBean.setConfiguration(mybatisConfg());
 		//추가내용
 		return factoryBean.getObject();
@@ -51,13 +57,17 @@ public class DBConfiguration {
 	public SqlSessionTemplate sqlSession() throws Exception {
 		return new SqlSessionTemplate(sqlSessionFactory());
 	}
-	//추가내용
+
 	@Bean
 	@ConfigurationProperties(prefix="mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg(){
 
 		return new org.apache.ibatis.session.Configuration();
 	}
-	//추가내용
+	
+	@Bean
+	public PlatformTransactionManager transactionManager() {
+		return new DataSourceTransactionManager(dataSource());
+	}
 
 }
