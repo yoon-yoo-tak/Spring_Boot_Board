@@ -2,6 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.domain.BoardDTO;
 import com.example.demo.mapper.BoardMapper;
+import com.example.demo.paging.Criteria;
+import com.example.demo.paging.PaginationInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +47,18 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public List<BoardDTO> getBoardList() {
+    public List<BoardDTO> getBoardList(BoardDTO params) {
         List<BoardDTO> boardList = Collections.emptyList();
 
-        int totalCnt = boardMapper.selectBoardTotalCount();
+        int totalCnt = boardMapper.selectBoardTotalCount(params);
+        
+        PaginationInfo paginationInfo = new PaginationInfo(params);
+        paginationInfo.setTotalRecordCount(totalCnt);
+        
+        params.setPaginationInfo(paginationInfo);
 
         if(totalCnt > 0 ){
-            boardList = boardMapper.selectBoardList();
+            boardList = boardMapper.selectBoardList(params);
         }
         return boardList;
     }

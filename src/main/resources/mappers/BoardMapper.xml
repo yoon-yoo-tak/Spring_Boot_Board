@@ -68,24 +68,26 @@
 	</update>
 	
 	<select id="selectBoardList" parameterType="BoardDTO" resultType="BoardDTO">
-		select
-			<include refid="boardColumns"/>
-		from
+		SELECT
+			<include refid="boardColumns" />
+		FROM
 			my_board
-		where
+		WHERE
 			delete_yn = 'N'
-		order by
+		ORDER BY
 			notice_yn ASC,
 			idx DESC,
 			insert_time DESC
+		LIMIT
+			#{paginationInfo.firstRecordIndex}, #{recordsPerPage}
 	</select>
-	
+
 	<select id="selectBoardTotalCount" parameterType="BoardDTO" resultType="int">
-		select
-			count(*)
-		from 
+		SELECT
+			COUNT(*)
+		FROM
 			my_board
-		where
+		WHERE
 			delete_yn = 'N'
 	</select>
 </mapper>
